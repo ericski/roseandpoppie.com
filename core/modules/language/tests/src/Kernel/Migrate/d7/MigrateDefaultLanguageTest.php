@@ -33,11 +33,4 @@ class MigrateDefaultLanguageTest extends MigrateDrupal7TestBase {
     $this->doTestMigration('tv', FALSE);
   }
 
-  /**
-   * Tests language_default migration with unset variable.
-   */
-  public function testMigrationWithUnsetVariable() {
-    $this->doTestMigrationWithUnsetVariable();
-  }
-
 }

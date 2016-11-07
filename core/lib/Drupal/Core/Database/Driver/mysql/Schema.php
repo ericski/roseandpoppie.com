@@ -120,7 +120,7 @@ class Schema extends DatabaseSchema {
     // By default, MySQL uses the default collation for new tables, which is
     // 'utf8mb4_general_ci' for utf8mb4. If an alternate collation has been
     // set, it needs to be explicitly specified.
-    // @see \Drupal\Core\Database\Driver\mysql\Schema
+    // @see DatabaseConnection_mysql
     if (!empty($info['collation'])) {
       $sql .= ' COLLATE ' . $info['collation'];
     }

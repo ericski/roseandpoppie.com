@@ -7,7 +7,6 @@ use Drupal\Core\TypedData\TypedDataManagerInterface;
 use Drupal\Tests\UnitTestCase;
 use Drupal\serialization\Normalizer\ListNormalizer;
 use Drupal\Core\TypedData\Plugin\DataType\ItemList;
-use Symfony\Component\Serializer\Serializer;
 
 /**
  * @coversDefaultClass \Drupal\serialization\Normalizer\ListNormalizer
@@ -36,20 +35,13 @@ class ListNormalizerTest extends UnitTestCase {
    */
   protected $expectedListValues = array('test', 'test', 'test');
 
-  /**
-   * The mocked typed data.
-   *
-   * @var \PHPUnit_Framework_MockObject_MockObject|\Drupal\Core\TypedData\TypedDataInterface
-   */
-  protected $typedData;
-
   protected function setUp() {
     // Mock the TypedDataManager to return a TypedDataInterface mock.
-    $this->typedData = $this->getMock('Drupal\Core\TypedData\TypedDataInterface');
+    $typed_data = $this->getMock('Drupal\Core\TypedData\TypedDataInterface');
     $typed_data_manager = $this->getMock(TypedDataManagerInterface::class);
     $typed_data_manager->expects($this->any())
       ->method('getPropertyInstance')
-      ->will($this->returnValue($this->typedData));
+      ->will($this->returnValue($typed_data));
 
     // Set up a mock container as ItemList() will call for the 'typed_data_manager'
     // service.
@@ -81,14 +73,16 @@ class ListNormalizerTest extends UnitTestCase {
    * Tests the normalize() method.
    */
   public function testNormalize() {
-    $serializer = $this->prophesize(Serializer::class);
-    $serializer->normalize($this->typedData, 'json', ['mu' => 'nu'])
-      ->shouldBeCalledTimes(3)
-      ->willReturn('test');
+    $serializer = $this->getMockBuilder('Symfony\Component\Serializer\Serializer')
+      ->setMethods(array('normalize'))
+      ->getMock();
+    $serializer->expects($this->exactly(3))
+      ->method('normalize')
+      ->will($this->returnValue('test'));
 
-    $this->normalizer->setSerializer($serializer->reveal());
+    $this->normalizer->setSerializer($serializer);
 
-    $normalized = $this->normalizer->normalize($this->list, 'json', ['mu' => 'nu']);
+    $normalized = $this->normalizer->normalize($this->list);
 
     $this->assertEquals($this->expectedListValues, $normalized);
   }

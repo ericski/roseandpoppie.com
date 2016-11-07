@@ -166,10 +166,7 @@ class EntityResolverManager {
       list($entity_type) = explode('.', $entity_form, 2);
     }
 
-    // Do not add parameter information if the route does not declare a
-    // parameter in the first place. This is the case for add forms, for
-    // example.
-    if (isset($entity_type) && isset($this->getEntityTypes()[$entity_type]) && (strpos($route->getPath(), '{' . $entity_type . '}') !== FALSE)) {
+    if (isset($entity_type) && isset($this->getEntityTypes()[$entity_type])) {
       $parameter_definitions = $route->getOption('parameters') ?: array();
 
       // First try to figure out whether there is already a parameter upcasting

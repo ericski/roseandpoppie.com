@@ -12,13 +12,6 @@ use Drupal\simpletest\WebTestBase;
 class AjaxPageStateTest extends WebTestBase {
 
   /**
-   * Modules to install.
-   *
-   * @var array
-   */
-  public static $modules = ['node', 'views'];
-
-  /**
    * User account with all available permissions
    *
    * @var \Drupal\Core\Session\AccountInterface
@@ -84,16 +77,22 @@ class AjaxPageStateTest extends WebTestBase {
   }
 
   /**
-   * Test if multiple libraries can be excluded.
+   * Test if multiple libaries can be excluded.
    *
-   * The ajax_page_state[libraries] should be able to support multiple libraries
+   * ajax_page_state[libraries] should be able to support multiple libraries
    * comma separated.
    */
   public function testMultipleLibrariesAreNotLoaded() {
     $this->drupalGet('node',
-      ['query' => ['ajax_page_state' => ['libraries' => 'core/html5shiv,core/drupalSettings']]]
+      array(
+        "query" =>
+          array(
+            'ajax_page_state' => array(
+              'libraries' => 'core/html5shiv,core/drupalSettings'
+            )
+          )
+      )
     );
-    $this->assertResponse(200);
     $this->assertNoRaw(
       '/core/assets/vendor/html5shiv/html5shiv.min.js',
       'The html5shiv library from core should be excluded from loading.'
@@ -102,17 +101,6 @@ class AjaxPageStateTest extends WebTestBase {
     $this->assertNoRaw(
       '/core/misc/drupalSettingsLoader.js',
       'The drupalSettings library from core should be excluded from loading.'
-    );
-
-    $this->drupalGet('node');
-    $this->assertRaw(
-      '/core/assets/vendor/html5shiv/html5shiv.min.js',
-      'The html5shiv library from core should be included in loading.'
-    );
-
-    $this->assertRaw(
-      '/core/misc/drupalSettingsLoader.js',
-      'The drupalSettings library from core should be included in loading.'
     );
   }
 

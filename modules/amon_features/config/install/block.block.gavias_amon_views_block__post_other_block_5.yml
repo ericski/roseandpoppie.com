@@ -1,0 +1,27 @@
+langcode: en
+status: false
+dependencies:
+  config:
+    - views.view.post_other
+  module:
+    - block_class
+    - views
+  theme:
+    - gavias_amon
+third_party_settings:
+  block_class:
+    classes: ''
+id: gavias_amon_views_block__post_other_block_5
+theme: gavias_amon
+region: '-1'
+weight: -19
+provider: null
+plugin: 'views_block:post_other-block_5'
+settings:
+  id: 'views_block:post_other-block_5'
+  label: ''
+  provider: views
+  label_display: '0'
+  views_label: ''
+  items_per_page: none
+visibility: {  }

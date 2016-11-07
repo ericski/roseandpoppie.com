@@ -15,18 +15,9 @@ process:
   login: login
   status: status
   timezone: timezone
-  langcode:
-    plugin: user_langcode
-    source: language
-    fallback_to_site_default: false
-  preferred_langcode:
-    plugin: user_langcode
-    source: language
-    fallback_to_site_default: true
-  preferred_admin_langcode:
-    plugin: user_langcode
-    source: language
-    fallback_to_site_default: true
+  langcode: language
+  preferred_langcode: language
+  preferred_admin_langcode: language
   init: init
   roles:
     plugin: migration
@@ -47,8 +38,6 @@ migration_dependencies:
     - d7_user_role
   optional:
     - d7_file
-    - language
-    - default_language
     - user_picture_field_instance
     - user_picture_entity_display
     - user_picture_entity_form_display

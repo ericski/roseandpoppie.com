@@ -290,7 +290,7 @@ class MigrateUpgradeForm extends ConfirmFormBase {
       'source_module' => 'locale',
       'destination_module' => 'locale',
     ],
-    'd6_menu_links' => [
+    'menu_links' => [
       'source_module' => 'menu',
       'destination_module' => 'menu_link_content',
     ],
@@ -298,17 +298,13 @@ class MigrateUpgradeForm extends ConfirmFormBase {
       'source_module' => 'menu',
       'destination_module' => 'menu_ui',
     ],
-    'd7_menu_links' => [
-      'source_module' => 'menu',
-      'destination_module' => 'menu_link_content',
-    ],
     'd6_node' => [
       'source_module' => 'node',
       'destination_module' => 'node',
     ],
     'd6_node_translation' => [
-      'source_module' => 'translation',
-      'destination_module' => 'content_translation',
+      'source_module' => 'node',
+      'destination_module' => 'node',
     ],
     'd6_node_revision' => [
       'source_module' => 'node',
@@ -478,11 +474,7 @@ class MigrateUpgradeForm extends ConfirmFormBase {
       'source_module' => 'system',
       'destination_module' => 'system',
     ],
-    'd6_menu' => [
-      'source_module' => 'menu',
-      'destination_module' => 'system',
-    ],
-    'd7_menu' => [
+    'menu' => [
       'source_module' => 'menu',
       'destination_module' => 'system',
     ],
@@ -698,7 +690,7 @@ class MigrateUpgradeForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $step = $form_state->get('step') ?: 'overview';
+    $step = $form_state->getValue('step', 'overview');
     switch ($step) {
       case 'overview':
         return $this->buildOverviewForm($form, $form_state);
@@ -796,7 +788,7 @@ class MigrateUpgradeForm extends ConfirmFormBase {
    *   The current state of the form.
    */
   public function submitOverviewForm(array &$form, FormStateInterface $form_state) {
-    $form_state->set('step', 'credentials');
+    $form_state->setValue('step', 'credentials');
     $form_state->setRebuild();
   }
 
@@ -985,7 +977,7 @@ class MigrateUpgradeForm extends ConfirmFormBase {
    */
   public function submitCredentialForm(array &$form, FormStateInterface $form_state) {
     // Indicate the next step is confirmation.
-    $form_state->set('step', 'confirm');
+    $form_state->setValue('step', 'confirm');
     $form_state->setRebuild();
   }
 

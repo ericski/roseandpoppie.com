@@ -3,7 +3,6 @@
 namespace Drupal\link\Plugin\migrate\cckfield\d7;
 
 use Drupal\link\Plugin\migrate\cckfield\LinkField as D6LinkField;
-use Drupal\migrate\Plugin\MigrationInterface;
 
 /**
  * @MigrateCckField(
@@ -26,23 +25,6 @@ class LinkField extends D6LinkField {
   public function getFieldWidgetMap() {
     // By default, use the plugin ID for the widget types.
     return ['link_field' => 'link_default'];
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function processFieldInstance(MigrationInterface $migration) {
-    $process = [
-      'plugin' => 'static_map',
-      'source' => 'instance_settings/title',
-      'bypass' => TRUE,
-      'map' => [
-        'disabled' => DRUPAL_DISABLED,
-        'optional' => DRUPAL_OPTIONAL,
-        'required' => DRUPAL_REQUIRED,
-      ],
-    ];
-    $migration->mergeProcessOfProperty('settings/title', $process);
   }
 
 }

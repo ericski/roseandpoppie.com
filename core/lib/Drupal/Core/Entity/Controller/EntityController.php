@@ -301,7 +301,7 @@ class EntityController implements ContainerInjectionInterface {
    * @param array $bundles
    *   An array of bundle information.
    * @param \Drupal\Core\Entity\EntityTypeInterface $bundle_entity_type
-   *   The bundle entity type definition.
+   *   The ID of the bundle entity type.
    *
    * @return array
    *   The expanded array of bundle information.

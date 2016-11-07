@@ -268,7 +268,7 @@ class EntityResource extends ResourceBase implements DependentPluginInterface {
       $entity->delete();
       $this->logger->notice('Deleted entity %type with ID %id.', array('%type' => $entity->getEntityTypeId(), '%id' => $entity->id()));
 
-      // DELETE responses have an empty body.
+      // Delete responses have an empty body.
       return new ModifiedResourceResponse(NULL, 204);
     }
     catch (EntityStorageException $e) {

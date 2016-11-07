@@ -930,35 +930,27 @@ function drupal_requirements_url($severity) {
  */
 function drupal_check_profile($profile) {
   $info = install_profile_info($profile);
+
   // Collect requirement testing results.
   $requirements = array();
+
   // Performs an ExtensionDiscovery scan as the system module is unavailable and
   // we don't yet know where all the modules are located.
   // @todo Remove as part of https://www.drupal.org/node/2186491
-  $drupal_root = \Drupal::root();
-  $module_list = (new ExtensionDiscovery($drupal_root))->scan('module');
-
+  $listing = new ExtensionDiscovery(\Drupal::root());
+  $module_list = $listing->scan('module');
   foreach ($info['dependencies'] as $module) {
-    // If the module is in the module list we know it exists and we can continue
-    // including and registering it.
-    // @see \Drupal\Core\Extension\ExtensionDiscovery::scanDirectory()
-    if (isset($module_list[$module])) {
-      $function = $module . '_requirements';
-      $module_path = $module_list[$module]->getPath();
-      $install_file = "$drupal_root/$module_path/$module.install";
+    $file = \Drupal::root() . '/' . $module_list[$module]->getPath() . "/$module.install";
+    if (is_file($file)) {
+      require_once $file;
+    }
+    $function = $module . '_requirements';
 
-      if (is_file($install_file)) {
-        require_once $install_file;
-      }
-
-      drupal_classloader_register($module, $module_path);
-
-      if (function_exists($function)) {
-        $requirements = array_merge($requirements, $function('install'));
-      }
+    drupal_classloader_register($module, $module_list[$module]->getPath());
+    if (function_exists($function)) {
+      $requirements = array_merge($requirements, $function('install'));
     }
   }
-
   return $requirements;
 }
 

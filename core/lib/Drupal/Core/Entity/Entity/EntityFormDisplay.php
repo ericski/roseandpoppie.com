@@ -236,7 +236,7 @@ class EntityFormDisplay extends EntityDisplayBase implements EntityFormDisplayIn
     // Flag entity level violations.
     foreach ($violations->getEntityViolations() as $violation) {
       /** @var \Symfony\Component\Validator\ConstraintViolationInterface $violation */
-      $form_state->setError($form, $violation->getMessage());
+      $form_state->setErrorByName('', $violation->getMessage());
     }
 
     $this->flagWidgetsErrorsFromViolations($violations, $form, $form_state);

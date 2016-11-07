@@ -122,14 +122,7 @@ class MailHandler implements MailHandlerInterface {
     if (!$message->isPersonal() && $contact_form->getReply()) {
       // User contact forms do not support an auto-reply message, so this
       // message always originates from the site.
-      if (!$sender_cloned->getEmail()) {
-        $this->logger->error('Error sending auto-reply, missing sender e-mail address in %contact_form', [
-          '%contact_form' => $contact_form->label(),
-        ]);
-      }
-      else {
-        $this->mailManager->mail('contact', 'page_autoreply', $sender_cloned->getEmail(), $current_langcode, $params);
-      }
+      $this->mailManager->mail('contact', 'page_autoreply', $sender_cloned->getEmail(), $current_langcode, $params);
     }
 
     if (!$message->isPersonal()) {

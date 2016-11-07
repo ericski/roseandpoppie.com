@@ -511,6 +511,8 @@ function template_preprocess_form_element_label(&$variables) {
     $variables['title'] = ['#markup' => $element['#title']];
   }
 
+  $variables['attributes'] = array();
+
   // Pass elements title_display to template.
   $variables['title_display'] = $element['#title_display'];
 

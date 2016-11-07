@@ -49,7 +49,7 @@ class RowTest extends UnitTestCase {
    * Tests object creation: empty.
    */
   public function testRowWithoutData() {
-    $row = new Row();
+    $row = new Row(array(), array());
     $this->assertSame(array(), $row->getSource(), 'Empty row');
   }
 
