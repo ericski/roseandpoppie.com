@@ -14,6 +14,7 @@ use Drupal\Core\Extension\Extension;
 use Drupal\Core\Extension\ExtensionDiscovery;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\config_update\ConfigRevertInterface;
 
 /**
  * The FeaturesManager provides helper functions for building packages.
@@ -62,6 +63,13 @@ class FeaturesManager implements FeaturesManagerInterface {
    * @var \Drupal\Core\Extension\ModuleHandlerInterface
    */
   protected $moduleHandler;
+
+  /**
+   * The config reverter.
+   *
+   * @var \Drupal\config_update\ConfigRevertInterface
+   */
+  protected $configReverter;
 
   /**
    * The Features settings.
@@ -127,16 +135,18 @@ class FeaturesManager implements FeaturesManagerInterface {
    *   The configuration manager.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
    *   The module handler.
+   * @param \Drupal\config_update\ConfigRevertInterface $config_reverter
    */
   public function __construct($root, EntityManagerInterface $entity_manager, ConfigFactoryInterface $config_factory,
                               StorageInterface $config_storage, ConfigManagerInterface $config_manager,
-                              ModuleHandlerInterface $module_handler) {
+                              ModuleHandlerInterface $module_handler, ConfigRevertInterface $config_reverter) {
     $this->root = $root;
     $this->entityManager = $entity_manager;
     $this->configStorage = $config_storage;
     $this->configManager = $config_manager;
     $this->moduleHandler = $module_handler;
     $this->configFactory = $config_factory;
+    $this->configReverter = $config_reverter;
     $this->settings = $config_factory->getEditable('features.settings');
     $this->extensionStorages = new FeaturesExtensionStorages($this->configStorage);
     $this->extensionStorages->addStorage(InstallStorage::CONFIG_INSTALL_DIRECTORY);
@@ -144,6 +154,15 @@ class FeaturesManager implements FeaturesManagerInterface {
     $this->packages = [];
     $this->packagesPrefixed = FALSE;
     $this->configCollection = [];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setRoot($root) {
+    $this->root = $root;
+    // Clear cache.
+    $this->featureInfoCache = [];
   }
 
   /**
@@ -182,7 +201,7 @@ class FeaturesManager implements FeaturesManagerInterface {
       'name_short' => '',
     );
     $prefix = FeaturesManagerInterface::SYSTEM_SIMPLE_CONFIG . '.';
-    if (strpos($fullname, $prefix)) {
+    if (strpos($fullname, $prefix) !== FALSE) {
       $result['type'] = FeaturesManagerInterface::SYSTEM_SIMPLE_CONFIG;
       $result['name_short'] = substr($fullname, strlen($prefix));
     }
@@ -280,6 +299,25 @@ class FeaturesManager implements FeaturesManagerInterface {
   /**
    * {@inheritdoc}
    */
+  public function loadPackage($module_name, $any = FALSE) {
+    $package = $this->getPackage($module_name);
+    if ($any && !isset($package)) {
+      // See if this is a non-features module.
+      $module_list = $this->moduleHandler->getModuleList();
+      if (!empty($module_list[$module])) {
+        $extension = $module_list[$module];
+        $package = $this->initPackageFromExtension($extension);
+        $config = $this->listExtensionConfig($extension);
+        $package->setConfig($config);
+        $package->setStatus(FeaturesManagerInterface::STATUS_INSTALLED);
+      }
+    }
+    return $package;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function filterPackages(array $packages, $namespace = '', $only_exported = FALSE) {
     $result = array();
     /** @var \Drupal\features\Package $package */
@@ -347,7 +385,7 @@ class FeaturesManager implements FeaturesManagerInterface {
    * {@inheritdoc}
    */
   public function getExtensionInfo(Extension $extension) {
-    return \Drupal::service('info_parser')->parse(\Drupal::root() . '/' . $extension->getPathname());
+    return \Drupal::service('info_parser')->parse($this->root . '/' . $extension->getPathname());
   }
 
   /**
@@ -385,11 +423,15 @@ class FeaturesManager implements FeaturesManagerInterface {
       $machine_names[] = $bundle->getProfileName();
     }
 
+    // If we are checking the default bundle, return all features.
+    if (isset($bundle) && $bundle->isDefault()) {
+      $bundle = NULL;
+    }
+
     $modules = $this->getFeaturesModules($bundle);
     // Filter to include only the requested packages.
     $modules = array_filter($modules, function ($module) use ($bundle, $machine_names) {
-      $short_name = $bundle->getShortName($module->getName());
-      return in_array($short_name, $machine_names);
+      return in_array($module->getName(), $machine_names);
     });
 
     $directories = array();
@@ -411,7 +453,7 @@ class FeaturesManager implements FeaturesManagerInterface {
       // modules. system_rebuild_module_data() includes only the site's install
       // profile directory, while we may need to include a custom profile.
       // @see _system_rebuild_module_data().
-      $listing = new ExtensionDiscovery(\Drupal::root());
+      $listing = new ExtensionDiscovery($this->root);
 
       $profile_directories = $listing->setProfileDirectoriesFromSettings()->getProfileDirectories();
       $installed_profile = $this->drupalGetProfile();
@@ -444,19 +486,10 @@ class FeaturesManager implements FeaturesManagerInterface {
     $modules = $this->getAllModules();
 
     // Filter by bundle.
-    if (isset($bundle)) {
-      $features_manager = $this;
-      $modules = array_filter($modules, function ($module) use ($features_manager, $bundle) {
-        return $features_manager->isFeatureModule($module, $bundle);
-      });
-    }
-    else {
-      // No bundle filter, but still only return "Feature" modules
-      $features_manager = $this;
-      $modules = array_filter($modules, function ($module) use ($features_manager) {
-        return $features_manager->isFeatureModule($module);
-      });
-    }
+    $features_manager = $this;
+    $modules = array_filter($modules, function ($module) use ($features_manager, $bundle) {
+      return $features_manager->isFeatureModule($module, $bundle);
+    });
 
     // Filtered by installed status.
     if ($installed) {
@@ -611,7 +644,7 @@ class FeaturesManager implements FeaturesManagerInterface {
             }
           }
 
-          if (!$item->getPackage() && preg_match('/[_\-.]' . $pattern . '[_\-.]/', '.' . $item->getShortName() . '.')) {
+          if (!$item->getPackage() && preg_match('/(\.|^)' . $pattern . '(\.|-|_|$)/', $item->getShortName())) {
             try {
               $this->assignConfigPackage($machine_name, [$item_name]);
             }
@@ -934,12 +967,10 @@ class FeaturesManager implements FeaturesManagerInterface {
    */
   protected function addPackageFiles(Package $package) {
     $config_collection = $this->getConfigCollection();
-    // Only add files if there is at least one piece of configuration
-    // present.
+    // Always add .info.yml and .features.yml files.
+    $this->addInfoFile($package);
+    // Only add files if there is at least one piece of configuration present.
     if ($package->getConfig()) {
-      // Add .info.yml files.
-      $this->addInfoFile($package);
-
       // Add configuration files.
       foreach ($package->getConfig() as $name) {
         $config = $config_collection[$name];
@@ -1304,6 +1335,44 @@ class FeaturesManager implements FeaturesManagerInterface {
     }
     $this->featureInfoCache[$module_name] = $features_info;
     return $features_info;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function import($modules, $any = FALSE) {
+    $result = [
+      'new' => [],
+      'updated' => []
+    ];
+    $config = $this->getConfigCollection();
+
+    foreach ($modules as $module_name) {
+      $package = $this->loadPackage($module_name, $any);
+      $components = isset($package) ? $package->getConfigOrig() : [];
+      if (empty($components)) {
+        continue;
+      }
+
+      foreach ($components as $component) {
+        if (!isset($config[$component])) {
+          // Import missing component.
+          $item = $this->getConfigType($component);
+          $type = ConfigurationItem::fromConfigStringToConfigType($item['type']);
+          $this->configReverter->import($type, $item['name_short']);
+          $config[$component] = $item;
+          $result['new'][] = $component;
+        }
+        else {
+          // Revert existing component.
+          $item = $config[$component];
+          $type = ConfigurationItem::fromConfigStringToConfigType($item->getType());
+          $this->configReverter->revert($type, $item->getShortName());
+          $result['updated'][] = $component;
+        }
+      }
+    }
+    return $result;
   }
 
 }
