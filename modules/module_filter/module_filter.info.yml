@@ -1,14 +1,13 @@
 name: Module filter
+type: module
 description: Filter the modules list.
 package: Administration
-
-type: module
 # core: 8.x
 
 configure: module_filter.settings
 
-# Information added by Drupal.org packaging script on 2016-10-28
-version: '8.x-1.x-dev'
+# Information added by Drupal.org packaging script on 2017-01-02
+version: '8.x-3.0'
 core: '8.x'
 project: 'module_filter'
-datestamp: 1477642745
+datestamp: 1483321446

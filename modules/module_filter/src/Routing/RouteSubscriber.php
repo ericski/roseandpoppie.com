@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\module_filter\Routing\RouteSubscriber.
- */
-
 namespace Drupal\module_filter\Routing;
 
 use Drupal\Core\Routing\RouteSubscriberBase;
