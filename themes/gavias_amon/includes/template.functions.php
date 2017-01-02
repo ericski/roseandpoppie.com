@@ -101,4 +101,5 @@ function gavias_amon_preprocess_breadcrumb(&$variables){
       );
     }  
   }
+  $variables['#cache']['contexts'][] = 'url';
 }
