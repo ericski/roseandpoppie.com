@@ -274,6 +274,12 @@ div[class*='-md-6'].main-content{
     &:hover{
       color: $theme-color;
     }
+    &.btn {
+      color: #fff;
+      &:hover, &:focus {
+        background: #ff0303 !important;
+      }
+    }
   }
   .block-title{
     border-color: rgba(255, 255, 255, 0.1)!important;

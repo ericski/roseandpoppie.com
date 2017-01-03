@@ -1125,108 +1125,134 @@
     }
   }  
 
-  .portfolio-v2{
-    .content-inner{
-      padding-top: 10px;
-    }
-    .title{
-      a{
-        font-family: $font-second;
-        text-transform: uppercase;
-        font-size: 15px;
-        font-weight: 700;
-      }
-    }
-    .category{
-      a{
-        color: #707070;
-        font-style: italic;
-        &:hover{
-          color: $theme-color;
-        }
-      }
-    }
-  }
+.portfolio-v2{
+	.content-inner{
+		padding-top: 10px;
+	}
+	.title{
+		a{
+			font-family: $font-second;
+			text-transform: uppercase;
+			font-size: 15px;
+			font-weight: 700;
+		}
+	}
+	.category{
+		a{
+			color: #707070;
+			font-style: italic;
+			&:hover{
+				color: $theme-color;
+			}
+		}
+	}
+}
 
-  .testimonial-carousel{
-    .item{
-      margin: 3px;
-    }
-    .testimonial-v1{
-      .quote{
-        font-size: 16px;
-        font-style: italic;
-      }
-      .avatar{
-        margin-top: 10px;
-        @include size(60px, 60px);
-        img{
-          @include border-radius(50%);
-        }
-      }
-      .content-inner{
-        .title{
-          margin-top: 10px;
-          font-size: 14px;
-          font-weight: 700;
-          color: $theme-color;
-          text-transform: uppercase;
-        }
-        .job{
-          font-family: 14px;
-        }
-      }  
-    }
-    .testimonial-v2{
-      padding: 0 10px;
-      .quote{
-        font-size: 18px;
-        font-style: italic;
-      }
-      .avatar{
-        display: inline-block;
-        margin-top: 10px;
-        @include size(60px, 60px);
-        img{
-          @include border-radius(50%);
-        }
-      }
-      .content-inner{
-        iframe{
-          min-height: 315px;
-          width: 100%;
-        }
-        .title{
-          margin-top: 10px;
-          font-size: 16px;
-          font-weight: 700;
-          color: $theme-color;
-          text-transform: uppercase;
-        }
-      }  
-    }
-  }  
+.node--type-portfolio {
+	.owl-item .item {
+		text-align: center;
+	}
+}
 
-  .list-post-footer{
-    .view-list-item{
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      margin-bottom: 15px!important;
-      padding-bottom: 15px;
-      &:last-child{
-        border-bottom: none;
-      }
-    }
-    .post-block{
-      background: none;
-    }
-    .post-image{
-      display: none;
-    }
-    .post-content{
-      width: 100%;
-      padding: 0!important;
-    }
-    .post-title a{
-      font-weight: 400!important;
-    }
-  }
+.testimonial-carousel{
+	.item{
+		margin: 3px;
+	}
+	.testimonial-v1{
+		.quote{
+			font-size: 16px;
+			font-style: italic;
+		}
+		.avatar{
+			margin-top: 10px;
+			@include size(60px, 60px);
+			img{
+				@include border-radius(50%);
+			}
+		}
+		.content-inner{
+			.title{
+				margin-top: 10px;
+				font-size: 14px;
+				font-weight: 700;
+				color: $theme-color;
+				text-transform: uppercase;
+			}
+			.job{
+				font-family: 14px;
+			}
+		}  
+	}
+	.testimonial-v2{
+		padding: 0 10px;
+		.quote{
+			font-size: 18px;
+			font-style: italic;
+		}
+		.avatar{
+			display: inline-block;
+			margin-top: 10px;
+			@include size(60px, 60px);
+			img{
+				@include border-radius(50%);
+			}
+		}
+		.content-inner{
+			iframe{
+				min-height: 315px;
+				width: 100%;
+			}
+			.title{
+				margin-top: 10px;
+				font-size: 16px;
+				font-weight: 700;
+				color: $theme-color;
+				text-transform: uppercase;
+			}
+		}  
+	}
+}  
+
+.list-post-footer{
+	.view-list-item{
+		border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+		margin-bottom: 15px!important;
+		padding-bottom: 15px;
+		&:last-child{
+			border-bottom: none;
+		}
+	}
+	.post-block{
+		background: none;
+	}
+	.post-image{
+		display: none;
+	}
+	.post-content{
+		width: 100%;
+		padding: 0!important;
+	}
+	.post-title a{
+		font-weight: 400!important;
+	}
+}
+
+article.node {
+	p {
+		margin: 10px 0;
+	}
+	a {
+		color: #00630b;
+		&:hover, &:focus {
+			color: #00a711;
+		}
+	}
+	.store-badge {
+		max-width: 275px;
+	}
+}
+
+.mailchimp-newsletter-mergefields label {
+    width: 125px;
+    padding: 10px 0;
+}

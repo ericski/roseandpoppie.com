@@ -161,7 +161,12 @@
       {% endif %}
 
       <div{{ content_attributes.addClass('node__content', 'clearfix') }}>
-        {{ content|without('field_image','field_post_category', 'field_post_format', 'field_post_type', 'field_post_embed', 'field_post_gallery', 'comment') }}
+        {{ content|without('field_image','field_post_category', 'field_post_format', 'field_post_type', 'field_post_embed', 'field_post_gallery', 'field_store_url', 'field_platform', 'comment') }}
+        {%  if node.field_platform.value.0.target_id == 22 %}
+          <a href="{{ node.field_store_url.value.0.uri }}"><img class="store-badge" src="{{ base_path ~ directory }}/images/Apple-Appstore-Badge.svg" alt="Apple Appstore" /></a>
+        {% else %}
+          <a href="{{ node.field_store_url.value.0.uri }}"><img class="store-badge" src="{{ base_path ~ directory }}/images/google-play-badge.png" alt="Google Play" /></a>
+        {% endif %}
       </div>
       <div id="node-single-comment">
         {{ content.comment }}

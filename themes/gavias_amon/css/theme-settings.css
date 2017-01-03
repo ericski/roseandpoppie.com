@@ -1,27 +1,33 @@
 /****/
+/* line 7, ../sass/theme-settings.scss */
 .entity-meta {
   -webkit-box-shadow: none;
   box-shadow: none;
 }
+/* line 9, ../sass/theme-settings.scss */
 .entity-meta details[open] {
   background: none;
   border: none;
 }
 
+/* line 14, ../sass/theme-settings.scss */
 .vertical-tabs__panes {
   border: 0 !important;
 }
 
+/* line 17, ../sass/theme-settings.scss */
 .vertical-tabs__pane summary {
   display: block !important;
   background-color: #ccc;
   margin-bottom: 15px;
 }
 
+/* line 22, ../sass/theme-settings.scss */
 .vertical-tabs__pane > summary {
   display: none !important;
 }
 
+/* line 26, ../sass/theme-settings.scss */
 input[type="text"],
 input[type="tel"],
 input[type="password"],
@@ -34,17 +40,21 @@ textarea, select {
   padding: 5px 10px;
 }
 
+/* line 36, ../sass/theme-settings.scss */
 input[type="text"] {
   max-width: 300px;
 }
 
+/* line 40, ../sass/theme-settings.scss */
 .form-item {
   padding-bottom: 10px;
 }
+/* line 42, ../sass/theme-settings.scss */
 .form-item select {
   padding: 6px 25px 6px 6px;
 }
 
+/* line 46, ../sass/theme-settings.scss */
 .color-check {
   border: 1px solid rgba(0, 0, 0, 0.1);
   width: 32px;
@@ -54,9 +64,11 @@ input[type="text"] {
   margin-right: 10px;
 }
 
+/* line 55, ../sass/theme-settings.scss */
 .gva-customize .details-wrapper {
   float: left;
 }
+/* line 58, ../sass/theme-settings.scss */
 .gva-customize .form-type-textfield {
   display: block;
   width: 100%;
@@ -65,11 +77,13 @@ input[type="text"] {
   clear: both;
   margin-bottom: 0;
 }
+/* line 65, ../sass/theme-settings.scss */
 .gva-customize .form-type-textfield label {
   display: block;
   width: 100%;
   clear: both;
 }
+/* line 71, ../sass/theme-settings.scss */
 .gva-customize .form-type-textfield input {
   float: left;
   max-width: 250px;

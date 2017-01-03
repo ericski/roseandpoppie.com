@@ -33,12 +33,12 @@
           $(this).owlCarousel({
             items: items,
               nav: true,
-              autoplay: false,
-              autoplayTimeout: 20000,
+              autoplay: $(this).hasClass('project-gallery') ? true : false,
+              autoplayTimeout: 10000,
               smartSpeed: 350,
               navText: [ '<span class="zmdi zmdi-arrow-left"></span>', '<span class="zmdi zmdi-arrow-right"></span>' ],
               autoHeight: false,
-              loop: false,
+              loop: $(this).hasClass('project-gallery') ? true : false,
               responsive : {
                   0 : {
                       items: 1,

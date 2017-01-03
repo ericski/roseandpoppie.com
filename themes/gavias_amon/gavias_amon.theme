@@ -16,6 +16,10 @@ include_once $theme_path . '/includes/oembed.php';
 include_once $theme_path . '/includes/override.php';
 include_once $theme_path . '/includes/shortcodes.php';
 
+function gavias_amon_preprocess(&$variables, $hook) {
+    $variables['base_path'] = base_path();
+}
+
 function gavias_amon_preprocess_page(&$variables) {
   global $theme, $base_url;
   $theme_path = drupal_get_path('theme', 'gavias_amon');
