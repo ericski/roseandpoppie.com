@@ -2335,8 +2335,13 @@ article.node a:hover, article.node a:focus {
 article.node .store-badge {
   max-width: 275px;
 }
+/* line 1253, ../sass/template/_node.scss */
+article.node li {
+  list-style: disc;
+  margin-left: 20px;
+}
 
-/* line 1255, ../sass/template/_node.scss */
+/* line 1259, ../sass/template/_node.scss */
 .mailchimp-newsletter-mergefields label {
   width: 125px;
   padding: 10px 0;
